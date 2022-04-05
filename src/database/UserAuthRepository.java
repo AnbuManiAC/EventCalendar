@@ -6,24 +6,24 @@ import java.util.Map;
 import model.MyCalendar;
 import model.User;
 
-public class UserTable {
+public class UserAuthRepository {
 	
 	//Map<User, Password>;
 	private static Map<User, String> users = new HashMap<>();
 	private User currentUser;
 
-	private UserTable() {
+	private UserAuthRepository() {
 		User user = new User("test", "test");
 		users.put(user, "test");
-		UserCalendarTable userCal = UserCalendarTable.getInstance();
+		UserCalendarMappingRepository userCal = UserCalendarMappingRepository.getInstance();
 		userCal.insertRecord(user, new MyCalendar());
 		
 	}
-	private static UserTable instance = null;
+	private static UserAuthRepository instance = null;
 	
-	public static UserTable getInstance() {
+	public static UserAuthRepository getInstance() {
 		if(instance == null)
-			instance = new UserTable();
+			instance = new UserAuthRepository();
 		return instance;
 	}
 	

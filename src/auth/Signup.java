@@ -1,7 +1,7 @@
 package auth;
 
-import database.UserCalendarTable;
-import database.UserTable;
+import database.UserCalendarMappingRepository;
+import database.UserAuthRepository;
 import model.MyCalendar;
 import model.User;
 
@@ -18,13 +18,13 @@ public class Signup {
 	}
 	
 	private void storeNewUserCalendar(MyCalendar userCalendar) {
-		UserCalendarTable userCal = UserCalendarTable.getInstance();
+		UserCalendarMappingRepository userCal = UserCalendarMappingRepository.getInstance();
 		userCal.insertRecord(newUser, userCalendar);
 		
 	}
 
 	private void storeNewUser() {
-		UserTable users = UserTable.getInstance();
+		UserAuthRepository users = UserAuthRepository.getInstance();
 		users.insertRecord(newUser, password);
 	}
 }

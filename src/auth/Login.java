@@ -1,6 +1,6 @@
 package auth;
 
-import database.UserTable;
+import database.UserAuthRepository;
 import model.User;
 
 public class Login {
@@ -13,7 +13,7 @@ public class Login {
 	}
 	
 	public boolean checkUser() {
-		UserTable userAuth = UserTable.getInstance();
+		UserAuthRepository userAuth = UserAuthRepository.getInstance();
 		User user = userAuth.isAuthenticated(email, password);
 		if(user!=null) {
 			userAuth.setCurrentUser(user);

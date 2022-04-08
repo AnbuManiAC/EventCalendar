@@ -9,7 +9,8 @@ import model.Event;
 
 
 public class CalendarEventRepository {
-	private TreeMap<GregorianCalendar, TreeSet<Event>> calendarEventsMap = new TreeMap<>();
+	//Date -> set<events>
+	private final TreeMap<GregorianCalendar, TreeSet<Event>> calendarEventsMap = new TreeMap<>();
 
 	CalendarEventRepository() {
 		
@@ -48,7 +49,9 @@ public class CalendarEventRepository {
 	}
 	
 	public TreeSet<Event> getEventsOnThisDay(GregorianCalendar date){ 
-		return calendarEventsMap.get(date);
+		TreeSet<Event> events = new TreeSet<Event>();
+		events.addAll(calendarEventsMap.get(date));
+		return events;
 	}
 
 	public TreeSet<Event> getAllEvents(){

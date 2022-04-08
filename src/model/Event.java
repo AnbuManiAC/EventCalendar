@@ -1,20 +1,17 @@
 package model;
 
-import java.time.LocalTime;
-import java.util.Date;
-
 public class Event implements Comparable<Event> {
 	private static int nextId = 1;
 	private int id;
 	private String name;
-	private Date date;
-	private TimeSlot timeSlot;
+	Long startDateTime;
+	Long endDateTime;
 	
-	public Event(String name, Date date, TimeSlot timeSlot) {
+	public Event(String name, long startDateTime, long endDateTime) {
 		this.id = nextId++;
 		this.name = name;
-		this.date = date;
-		this.timeSlot = timeSlot;
+		this.startDateTime = startDateTime;
+		this.endDateTime = endDateTime;
 	}
 
 	public int getId() {
@@ -29,49 +26,35 @@ public class Event implements Comparable<Event> {
 		this.name = name;
 	}
 
-	public Date getDate() {
-		return date;
+	public long getStartDateTime() {
+		return startDateTime;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setStartDateTime(long startDateTime) {
+		this.startDateTime = startDateTime;
 	}
 
-	public TimeSlot getTimeSlot() {
-		return timeSlot;
+	public long getEndDateTime() {
+		return endDateTime;
 	}
 
-	public void setTimeSlot(TimeSlot timeSlot) {
-		this.timeSlot = timeSlot;
+	public void setEndDateTime(long endDateTime) {
+		this.endDateTime = endDateTime;
 	}
 
 	public int compareTo(Event other){
-		int dateComparator	 = this.date.compareTo(other.date);
-		if(dateComparator != 0)
-			return dateComparator;
-						
-		LocalTime thisStartTime = this.getTimeSlot().getStartTime();
-		LocalTime otherStartTime = other.getTimeSlot().getStartTime();
+		int startDateComparator	 = this.startDateTime.compareTo(other.startDateTime);
+		if(startDateComparator != 0)
+			return startDateComparator;
 		
-		int startTimeCmp = thisStartTime.compareTo(otherStartTime);
-		if(startTimeCmp!=0)
-			return startTimeCmp;
-		String thisName = this.getName();
-		String otherName = other.getName();
-		
-		int nameCmp = thisName.compareTo(otherName);
+		int nameCmp = this.getName().compareTo(other.getName());
 		
 		if(nameCmp!=0) 
 			return nameCmp;
 		
-		LocalTime thisEndTime = this.getTimeSlot().getEndTime();
-		LocalTime otherEndTime = other.getTimeSlot().getEndTime();
+		int endDateTimeComparator = this.endDateTime.compareTo(other.endDateTime);
 		
-		int endTimeCmp = thisEndTime.compareTo(otherEndTime);
-		
-		return endTimeCmp;
+		return endDateTimeComparator;
 	}
-
-	
 	
 }

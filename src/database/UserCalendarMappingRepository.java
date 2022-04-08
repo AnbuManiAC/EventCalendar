@@ -20,10 +20,11 @@ public class UserCalendarMappingRepository {
 		return instance;
 	}	
 	
+	
 	public void insertRecord(User user, MyCalendar calendar) {
 		userCalendar.put(user, new CalendarEventRepository());
 	}
-	public CalendarEventRepository getUserCelendar(User user) {
+	public CalendarEventRepository getUserCalendar(User user) {
 		return userCalendar.get(user);
 	}
 	

@@ -1,74 +1,72 @@
 package database;
 
-
-import java.util.GregorianCalendar;
-import java.util.TreeMap;
+import java.util.HashMap;
 import java.util.TreeSet;
 
 import model.Event;
-
+import model.User;
 
 public class CalendarEventRepository {
-	//Date -> set<events>
-	private final TreeMap<GregorianCalendar, TreeSet<Event>> calendarEventsMap = new TreeMap<>();
 
-	CalendarEventRepository() {
-		
+	private final HashMap<User, TreeSet<Event>> calendarEventsMap = new HashMap<>();
+	private User currentUser;
+
+	private CalendarEventRepository() {
+		currentUser = UserAuthRepository.getInstance().getCurrentUser();
 	}
-	
-	public void insertRecord(GregorianCalendar eventDate, 	Event newEvent) {
-		if(calendarEventsMap.containsKey(eventDate))
-			calendarEventsMap.get(eventDate).add(newEvent);  
-		else{
-			TreeSet<Event> events = new TreeSet<>(); 
+
+	private static CalendarEventRepository instance = null;
+
+	public static CalendarEventRepository getInstance() {
+		if (instance == null)
+			instance = new CalendarEventRepository();
+		return instance;
+	}
+
+	public void insertRecord(Event newEvent) {
+		if (calendarEventsMap.containsKey(currentUser))
+			calendarEventsMap.get(currentUser).add(newEvent);
+		else {
+			TreeSet<Event> events = new TreeSet<>();
 			events.add(newEvent);
-			calendarEventsMap.put(eventDate, events);
+			calendarEventsMap.put(currentUser, events);
 		}
 	}
-	
-	public boolean removeEvent(GregorianCalendar eventDate, int eventId) {
-		for(GregorianCalendar date : calendarEventsMap.keySet()) {
-			if(date.compareTo(eventDate)==0) {
-				TreeSet<Event> events = calendarEventsMap.get(eventDate);
-				for(Event event: events) {
-					if(event.getId()==eventId) {
-						events.remove(event);
-						return true;
-					}
+
+	public boolean removeEvent(int eventId) {
+		if (calendarEventsMap.containsKey(currentUser)) {
+			for (Event event : calendarEventsMap.get(currentUser)) {
+				if (event.getId() == eventId) {
+					calendarEventsMap.get(currentUser).remove(event);
+					return true;
 				}
 			}
 		}
 		return false;
 	}
-	public boolean removeRecord(GregorianCalendar eventDate) {
-		return calendarEventsMap.remove(eventDate)==null? false:true;
-	}
 
-	public void removeAll() {
-		calendarEventsMap.clear();	
-	}
-	
-	public TreeSet<Event> getEventsOnThisDay(GregorianCalendar date){ 
+//	public boolean removeRecord(long date) {
+//		return calendarEventsMap.remove(date) == null ? false : true;
+//	}
+
+	public TreeSet<Event> getEventsOnThisDay(long date) {
 		TreeSet<Event> events = new TreeSet<Event>();
-		events.addAll(calendarEventsMap.get(date));
+		long max = 24*60*60*1000 - 60*1000;
+		if(calendarEventsMap.containsKey(currentUser)) {
+			for(Event event : calendarEventsMap.get(currentUser)) {
+				long eventStartTime = event.getStartDateTime();
+				if(eventStartTime >= date && eventStartTime <= date + max)
+					events.add(event);
+			}
+		}
 		return events;
 	}
 
-	public TreeSet<Event> getAllEvents(){
-		
-		TreeSet<Event> allEvents = new TreeSet<Event>();
-
-		for(GregorianCalendar key : calendarEventsMap.keySet()) {
-			allEvents.addAll(calendarEventsMap.get(key));
-		}
-		return allEvents;
+	public TreeSet<Event> getAllEvents() {
+		TreeSet<Event> events = new TreeSet<>();
+		if(calendarEventsMap.get(currentUser)!=null)
+			events.addAll(calendarEventsMap.get(currentUser));
+		return events;
 	}
 
-	
-	public boolean checkDateforEvent(GregorianCalendar gc) {
-		if(calendarEventsMap.containsKey(gc))
-			return true;
-		return false;
-	}
-	
 }

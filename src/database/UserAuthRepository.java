@@ -2,8 +2,6 @@ package database;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import model.MyCalendar;
 import model.User;
 
 public class UserAuthRepository {
@@ -11,13 +9,10 @@ public class UserAuthRepository {
 	//Map<User, Password>;
 	private static Map<User, String> users = new HashMap<>();
 	private User currentUser;
-
+	
 	private UserAuthRepository() {
 		User user = new User("test", "test");
-		users.put(user, "test");
-		UserCalendarMappingRepository userCal = UserCalendarMappingRepository.getInstance();
-		userCal.insertRecord(user, new MyCalendar());
-		
+		users.put(user, "test");		
 	}
 	private static UserAuthRepository instance = null;
 	

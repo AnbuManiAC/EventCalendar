@@ -6,13 +6,12 @@ import java.util.GregorianCalendar;
 
 import utility.DateFormatter;
 
-public class MyCalendar{
-	// dd/MM/yyyy -> {Event1, Event2[name, date, time]}
-//	public static GregorianCalendar gCalendar = new GregorianCalendar();
-	public static final String[] MONTHS = { "", "January", "February", "March", "April", "May", "June", "July",
-			"August", "September", "October", "November", "December" };
-	public static final int[] MONTH_DAY_COUNT = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-	public static final int[] LEAP_MONTH_DAY_COUNT = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+public class MyCalendar {
+
+	GregorianCalendar calendar = new GregorianCalendar();
+
+	public static final String[] MONTHS = { "January", "February", "March", "April", "May", "June", "July", "August",
+			"September", "October", "November", "December" };
 	public static final String[] DAYS = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
 			"Saturday" };
 
@@ -64,7 +63,8 @@ public class MyCalendar{
 			GregorianCalendar key = new GregorianCalendar();
 			key.setTime(date);
 
-			if (i == calendar.get(Calendar.DAY_OF_MONTH))
+			if (i == calendar.get(Calendar.DAY_OF_MONTH)
+					&& calendar.get(Calendar.MONTH) == new GregorianCalendar().get(Calendar.MONTH))
 				System.out.print("[" + i + "] ");
 
 //			else if(calendarEventsMap.containsKey(key))
@@ -78,64 +78,6 @@ public class MyCalendar{
 			}
 		}
 		return MONTHS[monthIndex];
-
-	}
-
-	public String getNextDay(GregorianCalendar calendar) {
-		calendar.add(Calendar.DAY_OF_WEEK, 1);
-		String nextDay = getCurrentDay(calendar);
-		return nextDay;
-	}
-
-	public String getPreviousDay(GregorianCalendar calendar) {
-		calendar.add(Calendar.DAY_OF_WEEK, -1);
-		String previousDay = getCurrentDay(calendar);
-		return previousDay;
-	}
-
-	public String getCurrentDay(GregorianCalendar calendar) {
-		String today = DAYS[calendar.get(Calendar.DAY_OF_WEEK) - 1];
-		String monthShort = MONTHS[calendar.get(Calendar.MONTH)];
-		int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-		int year = calendar.get(Calendar.YEAR);
-
-		System.out.println(today + ", " + monthShort + " " + dayOfMonth + ", " + year);
-
-		String calendarString = gcToString(calendar);
-//		getEventsOnThisDay(calendarString);
-
-		String x = "";
-		return x;
-	}
-
-	public GregorianCalendar stringToGC(String dateString) {
-
-		GregorianCalendar calendar = new GregorianCalendar();
-		calendar.setTime(DateFormatter.StringtoDate(dateString));
-		return calendar;
-	}
-
-	public String gcToString(GregorianCalendar calendar) {
-
-		String day;
-		int tempDay = calendar.get(Calendar.DAY_OF_MONTH);
-		if (tempDay < 10) {
-			day = "0" + tempDay;
-		} else {
-			day = String.valueOf(tempDay);
-		}
-
-		String month;
-		int tempMonth = calendar.get(Calendar.MONTH) + 1;
-		if (tempMonth < 10) {
-			month = "0" + tempMonth;
-		} else {
-			month = String.valueOf(tempMonth);
-		}
-
-		String year = String.valueOf(calendar.get(Calendar.YEAR));
-
-		return day + "-" + month + "-" + year;
 
 	}
 
@@ -171,7 +113,6 @@ public class MyCalendar{
 		int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
 //        int startDay = calendar.getTime().getDay();
-		printMonth(new GregorianCalendar());
 		System.out.println(startDayIndex);
 //        for(int i=0;i<startDayIndex;i++)
 //        	result.append(" ".repeat(width/2));
@@ -230,57 +171,5 @@ public class MyCalendar{
 
 	private String left(String str, int width) {
 		return String.format("%s" + " ".repeat(width - str.length()), str);
-	}
-
-	public String printMonth(GregorianCalendar calendar) {
-
-		int monthIndex = calendar.get(Calendar.MONTH); // retrieves the index of the month from 0-11
-		int yearValue = calendar.get(Calendar.YEAR); // retrieves the year value from the calendar parameter
-
-		GregorianCalendar calMonthStart = new GregorianCalendar(yearValue, monthIndex, 1);
-		int dayIndex = calMonthStart.get(Calendar.DAY_OF_WEEK) - 1; // 1st day of month index
-		String d = DAYS[dayIndex]; // 1st day of month name
-		int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);// getting the days in a month
-
-		// Printing the Month value and the Year value
-		System.out.println(MONTHS[monthIndex + 1] + "  " + yearValue);
-		System.out.println("Su  Mo  Tu  We  Th  Fr  Sa");
-
-		for (int j = 0; j < dayIndex; j++) // j< first day of week
-		{
-			System.out.print("    ");
-		}
-		for (int i = 1; i <= daysInMonth; i++) {
-			String dayS;
-			if (i < 10) {
-				dayS = "0" + i;
-			} else {
-				dayS = String.valueOf(i);
-			}
-			int monthIndx = calendar.get(Calendar.MONTH);
-			String monthS;
-			if (monthIndx < 10) {
-				monthS = "0" + monthIndx;
-			} else {
-				monthS = String.valueOf(monthIndx);
-			}
-			String yearS = String.valueOf(calendar.get(Calendar.YEAR));
-			String dateOfi = dayS + "-" + monthS + "-" + yearS;
-			GregorianCalendar key = new GregorianCalendar();
-			key = stringToGC(dateOfi);
-
-			if (i == calendar.get(Calendar.DAY_OF_MONTH))
-				System.out.print("[" + i + "] ");
-
-			else if (i < 10)
-				System.out.print(i + "   ");
-			else
-				System.out.print(i + "  ");
-			if (((dayIndex + i) % 7 == 0) || (i == daysInMonth)) {
-				System.out.println("\n");
-			}
-		}
-		String x = "";
-		return x;
 	}
 }

@@ -1,66 +1,56 @@
 package database;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
+
 import model.User;
 
 public class UserAuthRepository {
-	
-	//Map<User, Password>;
-	private static Map<User, String> users = new HashMap<>();
-	private User currentUser;
-	
+
+	private Set<User> users = new HashSet<>();
+	private User currentUser;// May be we can maintain login state in HashMap by mapping user with boolean
+
 	private UserAuthRepository() {
-		User user = new User("test", "test");
-		users.put(user, "test");		
+		currentUser = null;
+		User user = new User("test", "test@gmail.com", "Test@123");
+		users.add(user);
 	}
-	private static UserAuthRepository instance = null;
-	
-	public static UserAuthRepository getInstance() {
-		if(instance == null)
+
+	static UserAuthRepository instance = null;
+
+	static UserAuthRepository getInstance() {
+		if (instance == null)
 			instance = new UserAuthRepository();
 		return instance;
 	}
-	
+
 	private User getUserByEmail(String email) {
-		if(users.size()>0) {
-			for(User user:users.keySet()) {
-				if(user.getEmail().equals(email))
-					return user;
-			}
-		}
-		return null;
-	}
-	public User isAuthenticated(String email, String password) 
-	{
-		User user = null;
-		if(users.size()>0) {
-			user = getUserByEmail(email);
-			if(user!=null) {
-				if(users.get(user).equals(password))
-					return user;
-				return null;
-			}
-		}
-		return user;
-	}
-	public void insertRecord(User user, String password) {
-		users.put(user, password);
-	}
-	public boolean removeRecord(User user) {
-		if(users.remove(user)!=null)
-			return true;
-		return false;
+		return users.stream().filter(user -> user.getEmail().equals(email)).findAny().orElse(null);
 	}
 
-	public boolean isExistingUser(String email) {
-		if(getUserByEmail(email)!=null) return true;
-		return false;
+	User authenticate(String email, String password) {
+		return users.stream().filter(user -> user.getEmail().equals(email) && user.checkPassword(password)).findAny()
+				.orElse(null);
+
 	}
-	public void setCurrentUser(User user) {
+
+	void insertRecord(User user) {
+		users.add(user);
+	}
+
+	void removeRecord(User user) {
+		users.remove(user);
+	}
+
+	void setCurrentUser(User user) {
 		this.currentUser = user;
 	}
-	public User getCurrentUser() {
+
+	boolean isExistingUser(String email) {
+		return getUserByEmail(email) != null;
+	}
+
+	User getCurrentUser() {
 		return currentUser;
 	}
 }

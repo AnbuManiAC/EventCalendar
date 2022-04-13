@@ -1,10 +1,6 @@
 package model;
-
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
-
-import utility.DateFormatter;
 
 public class MyCalendar {
 
@@ -15,69 +11,74 @@ public class MyCalendar {
 	public static final String[] DAYS = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
 			"Saturday" };
 
-	public String getNextMonth(GregorianCalendar calendar) {
+	
+	public String nextMonth(GregorianCalendar calendar) {
 		calendar.add(Calendar.MONTH, 1);
-		String nextMonth = getCurrentMonth(calendar);
-		return nextMonth;
+		return currentMonth(calendar);
 	}
 
-	public String getPreviousMonth(GregorianCalendar calendar) {
+	public String previousMonth(GregorianCalendar calendar) {
 		calendar.add(Calendar.MONTH, -1);
-		String previousMonth = getCurrentMonth(calendar);
-		return previousMonth;
+		return currentMonth(calendar);
 	}
+	
+	public String currentMonth(GregorianCalendar calendar) {
 
-	public String getCurrentMonth(GregorianCalendar calendar) {
-
+		StringBuilder result = new StringBuilder();
 		int monthIndex = calendar.get(Calendar.MONTH);
 		int yearValue = calendar.get(Calendar.YEAR);
-
-		GregorianCalendar calMonthStart = new GregorianCalendar(yearValue, monthIndex, 1);
-		int dayIndex = calMonthStart.get(Calendar.DAY_OF_WEEK) - 1;
-		// String d = dayNames[dayIndex];
+		GregorianCalendar calendarMonthStart = new GregorianCalendar(yearValue, monthIndex, 1);
+		int dayIndex = calendarMonthStart.get(Calendar.DAY_OF_WEEK) - 1;
 		int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-		System.out.println("\n" + MONTHS[monthIndex] + "  " + yearValue);
-		System.out.println("\nSu  Mo  Tu  We  Th  Fr  Sa\n");
-
-		for (int j = 0; j < dayIndex; j++) {
-			System.out.print("    ");
-		}
+		int width = 9;
+		int length = 4;
+		
+		result.append(formatMonthYear(yearValue, monthIndex, 7 * (width + 1) - 1).stripTrailing());
+		result.append("\n".repeat(length));
+		result.append(formatWeekHeader(width).stripTrailing());
+		result.append("\n".repeat(length));
+		for(int i=0;i<dayIndex;i++)
+        	result.append(" ".repeat(width+1));
 		for (int i = 1; i <= daysInMonth; i++) {
-			String dayS;
-			if (i < 10) {
-				dayS = "0" + i;
-			} else {
-				dayS = String.valueOf(i);
-			}
-			int monthIndx = calendar.get(Calendar.MONTH) + 1;
-			String monthS;
-			if (monthIndx < 10) {
-				monthS = "0" + monthIndx;
-			} else {
-				monthS = String.valueOf(monthIndx);
-			}
-			String yearS = String.valueOf(calendar.get(Calendar.YEAR));
-			String dateOfi = dayS + "-" + monthS + "-" + yearS;
-			Date date = DateFormatter.StringtoDate(dateOfi);
-			GregorianCalendar key = new GregorianCalendar();
-			key.setTime(date);
-
 			if (i == calendar.get(Calendar.DAY_OF_MONTH)
-					&& calendar.get(Calendar.MONTH) == new GregorianCalendar().get(Calendar.MONTH))
-				System.out.print("[" + i + "] ");
-
-//			else if(calendarEventsMap.containsKey(key))
-//				System.out.print("{"+i+"} "); 
+					&& calendar.get(Calendar.MONTH) == new GregorianCalendar().get(Calendar.MONTH)
+					&& calendar.get(Calendar.YEAR) == new GregorianCalendar().get(Calendar.YEAR))
+				result.append(center(" [" + i + "]",width+1));
 			else if (i < 10)
-				System.out.print(i + "   ");
+				result.append(center(i + "", width + 1));
+			else if (width > 2)
+				result.append(center(i + "", width + 1));
 			else
-				System.out.print(i + "  ");
-			if (((dayIndex + i) % 7 == 0) || (i == daysInMonth)) {
-				System.out.println("\n");
-			}
+				result.append(left(i + "", width + 1));
+
+			if ((i + dayIndex) % 7 == 0)
+				result.append("\n".repeat(length));
 		}
-		return MONTHS[monthIndex];
+
+		return result.toString();
+		
+//		currentMonthView.append("\n" + MONTHS[monthIndex] + "  " + yearValue);
+//		currentMonthView.append("\n\nSu  Mo  Tu  We  Th  Fr  Sa\n\n");
+//
+//		for (int j = 0; j < dayIndex; j++) {
+//			currentMonthView.append("    ");
+//		}
+//		for (int i = 1; i <= daysInMonth; i++) {
+//
+//			if (i == calendar.get(Calendar.DAY_OF_MONTH)
+//					&& calendar.get(Calendar.MONTH) == new GregorianCalendar().get(Calendar.MONTH)
+//					&& calendar.get(Calendar.YEAR) == new GregorianCalendar().get(Calendar.YEAR))
+//				currentMonthView.append("[" + i + "] ");
+//			else if (i < 10)
+//				currentMonthView.append(i + "   ");
+//			else
+//				currentMonthView.append(i + "  ");
+//			if (((dayIndex + i) % 7 == 0) || (i == daysInMonth)) {
+//				currentMonthView.append("\n\n");
+//			}
+//		}
+//		return currentMonthView.toString();
 
 	}
 
@@ -89,7 +90,7 @@ public class MyCalendar {
 	public String getMonthView(int year, int month, int width, int length) {
 		StringBuilder result = new StringBuilder();
 		width = Math.max(9, width);
-		length = Math.max(4, length);
+		length = Math.max(2, length);
 		result.append(formatMonthYear(year, month, 7 * (width + 1) - 1).stripTrailing());
 		result.append("\n".repeat(length));
 		result.append(formatWeekHeader(width).stripTrailing());
@@ -112,10 +113,11 @@ public class MyCalendar {
 		calendar.set(year, month, day);
 		int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-//        int startDay = calendar.getTime().getDay();
+		startDayIndex = 5;
+		System.out.println();
 		System.out.println(startDayIndex);
-//        for(int i=0;i<startDayIndex;i++)
-//        	result.append(" ".repeat(width/2));
+        for(int i=0;i<startDayIndex;i++)
+        	result.append(" ".repeat(width+1));
 		for (int i = 1; i <= maxDay; i++) {
 			if (i < 10)
 				result.append(center(i + "", width + 1));
@@ -124,7 +126,7 @@ public class MyCalendar {
 			else
 				result.append(left(i + "", width + 1));
 
-			if ((i + startDayIndex + 1) % 7 == 0)
+			if ((i + startDayIndex) % 7 == 0)
 				result.append("\n".repeat(length));
 		}
 

@@ -30,8 +30,7 @@ public class UserAuthRepository {
 
 	User authenticate(String email, String password) {
 		return users.stream().filter(user -> user.getEmail().equals(email) && user.checkPassword(password)).findAny()
-				.orElse(null);
-
+				.orElse(null);	
 	}
 
 	void insertRecord(User user) {

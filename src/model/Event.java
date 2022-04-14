@@ -16,7 +16,7 @@ public class Event implements Comparable<Event> {
 		this.startDateTime = startDateTime;
 		this.endDateTime = endDateTime;
 	}
-
+	
 	public int getId() {
 		return id;
 	}
@@ -24,7 +24,7 @@ public class Event implements Comparable<Event> {
 	public String getName() {
 		return name;
 	}
-
+	
 	public long getStartDateTime() {
 		return startDateTime;
 	}

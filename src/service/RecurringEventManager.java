@@ -1,6 +1,6 @@
 package service;
 
-import database.EventManager;
+import database.EventQueryManager;
 import exception.InvalidEventException;
 import model.Event;
 import model.RecurrenceType;
@@ -9,7 +9,7 @@ import model.User;
 public class RecurringEventManager {
 
 	private static long oneDayInMillis;
-	EventManager eventManager;
+	EventQueryManager eventManager;
 	User user;
 	Event baseEvent;
 	int count;
@@ -17,7 +17,7 @@ public class RecurringEventManager {
 
 	public RecurringEventManager(User user, Event baseEvent, int count, RecurrenceType type) {
 		oneDayInMillis = 24 * 60 * 60 * 1000;
-		eventManager = new EventManager();
+		eventManager = new EventQueryManager();
 		this.user = user;
 		this.baseEvent = baseEvent;
 		this.count = count;

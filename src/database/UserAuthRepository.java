@@ -12,8 +12,7 @@ public class UserAuthRepository {
 
 	private UserAuthRepository() {
 		currentUser = null;
-		User user = new User("test", "test@gmail.com", "Test@123");
-		users.add(user);
+		users.add(new User("test","test@gmail.com","Test@123"));
 	}
 
 	static UserAuthRepository instance = null;

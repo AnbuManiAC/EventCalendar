@@ -4,7 +4,7 @@ public class InvalidCredentials extends Exception {
 
 	@Override
 	public String getMessage() {
-		return super.getMessage();
+		return "Email or password does not match!";
 	}
 	
 }

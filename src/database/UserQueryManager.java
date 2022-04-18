@@ -1,20 +1,21 @@
 package database;
 
 import exception.InvalidCredentials;
+import exception.NoUserLoggedIn;
 import exception.UserAlreadyExistsException;
 import exception.UserDoesNotExistsException;
 import model.User;
 
-public class UserManager {
+public class UserQueryManager {
 	UserAuthRepository userAuthRepository;
 
-	public UserManager() {
+	public UserQueryManager() {
 		userAuthRepository = UserAuthRepository.getInstance();
 	}
 
 	public void signup(String name, String email, String password) throws UserAlreadyExistsException {
 		if (isExistingUser(email))
-			throw new UserAlreadyExistsException();	
+			throw new UserAlreadyExistsException();
 		User newUser = new User(name, email, password);
 		userAuthRepository.insertRecord(newUser);
 	}
@@ -27,17 +28,19 @@ public class UserManager {
 			throw new InvalidCredentials();
 		userAuthRepository.setCurrentUser(user);
 	}
-	
+
 	public boolean isExistingUser(String email) {
 		return userAuthRepository.isExistingUser(email);
 	}
 
-	public User getLoggedInUser() {
-		return userAuthRepository.getCurrentUser();// to-do handle not logged in state exception
+	public User getLoggedInUser() throws NoUserLoggedIn {
+		User user =  userAuthRepository.getCurrentUser();
+		if(user==null) throw new NoUserLoggedIn();
+		return user;
 	}
 
 	public void logout() {
-		userAuthRepository.setCurrentUser(null);// to-do handle already logout or not logged in exception
+		userAuthRepository.setCurrentUser(null);
 	}
 
 }

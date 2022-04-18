@@ -6,55 +6,47 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+import exception.TimeParseException;
+
 public class DateAndTimeFormatter {
 	
-	public static long dateTimeToMillisecond(String date, String time) {
+	public long dateTimeToMillisecond(String date, String time) throws ParseException {
 		date = date + " " + time;
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 		Date dateObj = null;
-		try {
-			dateObj = dateFormatter.parse(date);
-		} catch (ParseException e) {
-			System.out.println(e.getMessage());
-		}
+		dateObj = dateFormatter.parse(date);
 		return dateObj.getTime();
 	}
 	
-	public static long dateToMillisecond(String date) {
+	public long dateToMillisecond(String date) throws ParseException {
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 		Date dateObj = null;
-		try {
-			dateObj = dateFormatter.parse(date);
-		} catch (ParseException e) {
-			System.out.println(e.getMessage());
-		}
+		dateObj = dateFormatter.parse(date);
+
 		return dateObj.getTime();
 	}
 	
-	public static String millisecondToDate(long millisecond) {
+	public String millisecondToDate(long millisecond) {
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy  HH:mm");
 		Date date = new Date(millisecond);
 		return dateFormatter.format(date);
 	}
 	
-	public static Date toDate(String date) {
+	public Date toDate(String date) throws ParseException {
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 		Date dateObj = null;
-		try {
-			dateObj = dateFormatter.parse(date);
-		} catch (ParseException e) {
-			System.out.println(e.getMessage());
-		}
+		dateObj = dateFormatter.parse(date);
+
 		return dateObj;
 	}
 	
 	
-	public static LocalTime toLocalTime(String time) {
+	public LocalTime toLocalTime(String time) throws TimeParseException {
 		LocalTime timeObj = null;
 		try {
 			timeObj	= LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm"));
 		} catch (Exception e) {
-			System.out.println("Invalid time!");
+			throw new TimeParseException();
 		}
 		return timeObj;
 	}

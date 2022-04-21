@@ -13,6 +13,7 @@ public class UserAuthRepository {
 	private UserAuthRepository() {
 		currentUser = null;
 		users.add(new User("test","test@gmail.com","Test@123"));
+		users.add(new User("abc","abc@gmail.com","Abc@1234"));
 	}
 
 	static UserAuthRepository instance = null;
@@ -23,7 +24,7 @@ public class UserAuthRepository {
 		return instance;
 	}
 
-	private User getUserByEmail(String email) {
+	User getUserByEmail(String email) {
 		return users.stream().filter(user -> user.getEmail().equals(email)).findAny().orElse(null);
 	}
 

@@ -13,7 +13,7 @@ import util.DateAndTimeFormatter;
 public class EventQueryManager {
 
 	CalendarEventRepository calendarEventRepository;
-	static long oneDayInMillis = 24 * 60 * 60 * 1000;
+	private static long oneDayInMillis = 24 * 60 * 60 * 1000;
 
 	public EventQueryManager() {
 		calendarEventRepository = CalendarEventRepository.getInstance();
@@ -27,7 +27,12 @@ public class EventQueryManager {
 	}
 
 	public boolean deleteEvent(User user, int eventId) {
-		return calendarEventRepository.removeEvent(user, eventId);
+		boolean isDeleted =  calendarEventRepository.removeEvent(user, eventId);
+		if(isDeleted) {
+			EventInvitationQueryManager eventInvitationQueryManager = new EventInvitationQueryManager();
+			eventInvitationQueryManager.changeInvitationStatusAfterEventDeletion(user, eventId);
+		}
+		return isDeleted;
 	}
 
 	public TreeSet<Event> getAllEvents(User user) {

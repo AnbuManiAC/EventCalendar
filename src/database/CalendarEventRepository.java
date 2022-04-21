@@ -1,14 +1,14 @@
 package database;
 
-
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeSet;
 import model.Event;
 import model.User;
 
 public class CalendarEventRepository {
 
-	private final HashMap<User, TreeSet<Event>> calendarEventsMap = new HashMap<>();
+	private final Map<User, TreeSet<Event>> userEventsMap = new HashMap<>();
 
 	private CalendarEventRepository() {
 	}
@@ -22,31 +22,37 @@ public class CalendarEventRepository {
 	}
 
 	void insertRecord(User currentUser, Event newEvent) {
-		if (calendarEventsMap.containsKey(currentUser))
-			calendarEventsMap.get(currentUser).add(newEvent);
+		if (userEventsMap.containsKey(currentUser))
+			userEventsMap.get(currentUser).add(newEvent);
 		else {
 			TreeSet<Event> events = new TreeSet<>();
 			events.add(newEvent);
-			calendarEventsMap.put(currentUser, events);
+			userEventsMap.put(currentUser, events);
 		}
 	}
 
 	boolean removeEvent(User currentUser, int eventId) {
-		if (calendarEventsMap.containsKey(currentUser)) {
-			for (Event event : calendarEventsMap.get(currentUser)) {
-				if (event.getId() == eventId) {
-					calendarEventsMap.get(currentUser).remove(event);
-					return true;
-				}
-			}
+		Event event = getEventById(currentUser, eventId);
+		if(event!=null) {
+			userEventsMap.get(currentUser).remove(event);
+			return true;
 		}
 		return false;
 	}
 	TreeSet<Event> getEventsForUser(User currentUser) {
 		TreeSet<Event> events = new TreeSet<>();
-		if (calendarEventsMap.get(currentUser) != null)
-			events.addAll(calendarEventsMap.get(currentUser));
+		if (userEventsMap.get(currentUser) != null)
+			events.addAll(userEventsMap.get(currentUser));
 		return events;
+	}
+	Event getEventById(User currentUser, int eventId) {
+		if(userEventsMap.containsKey(currentUser)) {
+			for(Event event:userEventsMap.get(currentUser)) {
+				if(event.getId() == eventId) 
+					return event;
+			}
+		}
+		return null;
 	}
 
 }
